@@ -33,7 +33,7 @@ public class Pedido {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "id_cliente")
-	private Cliente idCliente;
+	private Cliente cliente;
 	
 	//CONSTRUCTOR
 	public Pedido(int nroPed) {
@@ -45,7 +45,7 @@ public class Pedido {
 		this(nroPed);
 		this.fechaPedido = fechaPedido;
 		this.estado =EstadoPedido.EN_PROCESO;
-		this.idCliente = idCliente;
+		this.cliente = idCliente;
 	}
 
 	
@@ -75,8 +75,8 @@ public class Pedido {
 	}
 	
 	
-	public Cliente getIdCliente() {
-		return idCliente;
+	public Cliente getCliente() {
+		return cliente;
 	}
 	
 	
@@ -95,8 +95,8 @@ public class Pedido {
 	}
 	
 	
-	public void setIdCliente(Cliente idCliente) {
-		this.idCliente = idCliente;
+	public void setCliente(Cliente idCliente) {
+		this.cliente = idCliente;
 	}
 
 	
@@ -114,7 +114,7 @@ public class Pedido {
 		if (obj instanceof Pedido) {
 			Pedido ped = (Pedido) obj;
 			
-			if (ped.getNroPedido() == this.nroPedido && ped.getIdCliente().equals(idCliente)) {
+			if (ped.getNroPedido() == this.nroPedido && ped.getCliente().equals(cliente)) {
 				return true;
 			}
 			

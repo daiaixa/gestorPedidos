@@ -37,4 +37,8 @@ public class ClienteServicio implements ICRUDServicio<Cliente>{
 	}
 	
 	
+	public boolean existeElemento(Long id) {
+		return clienteRepo.existsById(id);
+	}
+	
 	}

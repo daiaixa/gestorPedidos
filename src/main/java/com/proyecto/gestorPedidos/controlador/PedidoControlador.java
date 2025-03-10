@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.proyecto.gestorPedidos.excepciones.InexistenteException;
 import com.proyecto.gestorPedidos.modelo.Pedido;
+import com.proyecto.gestorPedidos.servicio.ClienteServicio;
 import com.proyecto.gestorPedidos.servicio.PedidoServicio;
 
 
@@ -21,6 +23,8 @@ public class PedidoControlador {
 
 	@Autowired
 	PedidoServicio pedidoServ;
+	ClienteServicio clienteServ;
+	
 	
 	
 	@GetMapping("/buscar/{id}")
@@ -35,9 +39,13 @@ public class PedidoControlador {
 	
 	//METODO POST -- para trer o modificar los clientes
 	@PostMapping({"/crear", "/modificar"})
-	public void crearOModificar(@RequestBody Pedido pedido) {
+	public void crearOModificar(@RequestBody Pedido pedido) throws InexistenteException {
+		if (pedido.getCliente().getId()==null || !clienteServ.existeElemento(pedido.getCliente().getId())) {
+			throw new InexistenteException("El numero de cliente no se encuentra registrado");
+		}
 		pedidoServ.guardarOModificarElemento(pedido);
 	}
+	
 	
 	//@DeleteMapping("/borrar/{id}") en el metodo utilizamos @PathVariable("id")
 	//Se recibe por la ruta la variable id del elemento que se desea eliminar
