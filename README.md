@@ -1,4 +1,4 @@
-# Sistema de Zoonosis
+# Sistema de gestión de pedidos
 
 ## Descripción del Proyecto
 Este proyecto esta desarrollado para permitir el manejo y control de los pedidos que realiza un determinado cliente.
