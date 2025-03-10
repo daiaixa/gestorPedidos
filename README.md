@@ -21,7 +21,7 @@ Funciones:
 - PostgreSQL 
 
 - Para pruebas: Postman
-
+- Arquitectura: MVC (Modelo Vista Controlador)
 
 ### Reference Documentation
 For further reference, please consider the following sections:
