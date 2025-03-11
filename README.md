@@ -3,19 +3,19 @@
 ## Descripción del Proyecto
 Este proyecto esta desarrollado para permitir el manejo y control de los pedidos que realiza un determinado cliente.
 Funciones:
-- Permite crear un pedido y/o cliente.
-- Permite modificar los datos de un pedido o cliente.
+- Permite crear clientes y pedidos.
+- Permite modificar los datos de un pedido o un cliente.
 - Permite eliminar un pedido o cliente.
-- Permite buscar un pedido o cliente especifico.
+- Permite buscar un pedido o cliente por medio del id.
 - Permite listar todos los pedidos y los clientes.
 - Permite listar los pedidos de un cliente determinado.
-- Permite listar los pedidos pendientes.
+- Permite listar los pedidos pendientes, en proceso, entregados o perdidos.
 
 
 ## Tecnologias Utilizadas
 - Java 17
 - Spring Boot 3.4.3
-- Maven 
+- Maven 4.0.0
 - JPA con Hibernate
 - H2
 - PostgreSQL 

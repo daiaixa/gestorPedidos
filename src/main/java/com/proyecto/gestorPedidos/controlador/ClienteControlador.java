@@ -26,25 +26,28 @@ public class ClienteControlador {
 	
 	
 	
-	
+	//QH: Trae los datos de un cliente segun el id
 	@GetMapping("/buscar/{id}")
 	public Cliente buscarCliente(@PathVariable("id") Long id) {
 		return clienteServ.traerElemento(id);
 	}
 
 	
+	//QH: Lista todos los clientes
 	@GetMapping("/listar")
 	public List<Cliente> listarClientes() {
 		return clienteServ.listarElementos();
 	}
 	
 	
+	//QH: Crea un nuevo cliente	
 	@PostMapping("/crear")
 	public void crear(@RequestBody Cliente cliente) {
 		clienteServ.guardarElemento(cliente);
 	}
 	
 	
+	//QH: Modifica un cliente segun el id
 	@PutMapping("/modificar/{id}")
 	public void modificar(@RequestBody Cliente cliente, @PathVariable("id") Long id) {
 		try {
@@ -55,6 +58,7 @@ public class ClienteControlador {
 	}
 	
 	
+	//QH: Elimina un cliente segun el id 
 	@DeleteMapping("/eliminar/{id}")
 	public void eliminarCliente(@PathVariable("id") Long id) {
 		try {
