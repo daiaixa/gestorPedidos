@@ -2,6 +2,7 @@ package com.proyecto.gestorPedidos.modelo;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.proyecto.gestorPedidos.enumerado.EstadoPedido;
 
 import jakarta.persistence.Entity;
@@ -22,29 +23,38 @@ public class Pedido {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	
 	@NotNull
 	private int nroPedido;	
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@NotNull
 	private LocalDate fechaPedido;
+	
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	private EstadoPedido estado;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private LocalDate fechaEntregado; //éste es opcional, cuando se entrega, se edita la fecha por ejemplo
+	
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "id_cliente")
 	private Cliente cliente;
 	
+	
+	
+	
 	//CONSTRUCTOR
-	public Pedido(int nroPed) {
-		this.nroPedido = nroPed;
+	public Pedido() { //son obligatorios y necesarios para implementar hibernate/JPA
+		this.estado =EstadoPedido.EN_PROCESO;
 	}
-
 	
 	public Pedido(int nroPed, LocalDate fechaPedido, Cliente idCliente) {
-		this(nroPed);
+		this();
+		this.nroPedido = nroPed;
 		this.fechaPedido = fechaPedido;
-		this.estado =EstadoPedido.EN_PROCESO;
 		this.cliente = idCliente;
 	}
 

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ public class PedidoControlador {
 
 	@Autowired
 	PedidoServicio pedidoServ;
+	@Autowired
 	ClienteServicio clienteServ;
 	
 	
@@ -30,6 +32,7 @@ public class PedidoControlador {
 	@GetMapping("/buscar/{id}")
 	public Pedido buscarPedidos(@PathVariable("id") Long id) {
 		return pedidoServ.traerElemento(id);
+		//CONTROLAR QUE SI ES NULL DEBERIA LANZAR UN ERROR
 	}
 
 	@GetMapping("/listar")
@@ -38,20 +41,33 @@ public class PedidoControlador {
 	}
 	
 	//METODO POST -- para trer o modificar los clientes
-	@PostMapping({"/crear", "/modificar"})
-	public void crearOModificar(@RequestBody Pedido pedido) throws InexistenteException {
-		if (pedido.getCliente().getId()==null || !clienteServ.existeElemento(pedido.getCliente().getId())) {
-			throw new InexistenteException("El numero de cliente no se encuentra registrado");
+	@PostMapping("/crear")
+	public void crearElemento(@RequestBody Pedido pedido){
+		try {
+			pedidoServ.guardarElemento(pedido);
+		} catch (InexistenteException e) {
+			System.out.println(e.getMsj());;
 		}
-		pedidoServ.guardarOModificarElemento(pedido);
 	}
 	
+	@PutMapping("/modificar/{id}")
+	public void modificarElemento(@RequestBody Pedido pedido, @PathVariable("id") Long id) {
+		try {
+			pedidoServ.modificarElemento(pedido, id);
+		} catch (InexistenteException e) {
+			System.out.println(e.getMsj());;
+			}
+	}
 	
 	//@DeleteMapping("/borrar/{id}") en el metodo utilizamos @PathVariable("id")
 	//Se recibe por la ruta la variable id del elemento que se desea eliminar
 	@DeleteMapping("/eliminar/{id}")
 	public void eliminarPedido(@PathVariable("id") Long id) {
-		pedidoServ.eliminarElemento(id);
+		try {
+			pedidoServ.eliminarElemento(id);
+		} catch (InexistenteException e) {
+			System.out.println(e.getMsj());;
+		}
 	}
 
 }

@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.proyecto.gestorPedidos.excepciones.InexistenteException;
 import com.proyecto.gestorPedidos.modelo.Cliente;
 import com.proyecto.gestorPedidos.servicio.ClienteServicio;
 
@@ -23,29 +25,43 @@ public class ClienteControlador {
 	private ClienteServicio clienteServ;
 	
 	
+	
+	
 	@GetMapping("/buscar/{id}")
 	public Cliente buscarCliente(@PathVariable("id") Long id) {
 		return clienteServ.traerElemento(id);
 	}
 
+	
 	@GetMapping("/listar")
 	public List<Cliente> listarClientes() {
 		return clienteServ.listarElementos();
 	}
 	
-	//METODO POST -- para trer o modificar los clientes
-	@PostMapping({"/modificar", "/crear"})
-	public void crearOModificar(@RequestBody Cliente cliente) {
-		clienteServ.guardarOModificarElemento(cliente);
+	
+	@PostMapping("/crear")
+	public void crear(@RequestBody Cliente cliente) {
+		clienteServ.guardarElemento(cliente);
 	}
 	
-	//METODO DELETE -- para eliminar algun cliente
 	
-	//@DeleteMapping("/borrar/{id}") en el metodo utilizamos @PathVariable("id")
-	//Se recibe por la ruta la variable id del elemento que se desea eliminar
+	@PutMapping("/modificar/{id}")
+	public void modificar(@RequestBody Cliente cliente, @PathVariable("id") Long id) {
+		try {
+			clienteServ.modificarElemento(cliente, id);
+		} catch (InexistenteException e) {
+			System.out.println(e.getMsj()); //TENDRIA QUE TIRAR UN ERROR HTTP
+		}
+	}
+	
+	
 	@DeleteMapping("/eliminar/{id}")
 	public void eliminarCliente(@PathVariable("id") Long id) {
-		clienteServ.eliminarElemento(id);
+		try {
+			clienteServ.eliminarElemento(id);
+		} catch (InexistenteException e) {
+			System.out.println(e.getMsj());;
+		}
 	}
 
 }
