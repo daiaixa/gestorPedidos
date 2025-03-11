@@ -19,9 +19,11 @@ Funciones:
 - JPA con Hibernate
 - H2
 - PostgreSQL 
-
-- Para pruebas: Postman
 - Arquitectura: MVC (Modelo Vista Controlador)
+
+- A modo de pruebas
+- Postman
+- y se deja una pequeña base de datos dentro del mismo proyecto.
 
 ### Reference Documentation
 For further reference, please consider the following sections:
