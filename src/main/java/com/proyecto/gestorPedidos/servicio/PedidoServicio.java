@@ -27,11 +27,12 @@ public class PedidoServicio implements ICRUDServicio<Pedido> {
 
 	@Override
 	public Pedido traerElemento(Long id) {
-		return pedidoRepo.findById(id).orElse(null);
+		return pedidoRepo.findById(id)
+				.orElseThrow(() -> new InexistenteException("No se encontró el recurso con el id" + id));
 	}
 
 	@Override
-	public void guardarElemento(Pedido elem) throws InexistenteException{
+	public void guardarElemento(Pedido elem) {
 		if (elem.getCliente().getId() == null || !clienteRepo.existsById(elem.getCliente().getId())) {
 			throw new InexistenteException("No existe el numero de cliente");
 		}
@@ -40,30 +41,24 @@ public class PedidoServicio implements ICRUDServicio<Pedido> {
 
 	@Override
 	public void eliminarElemento(Long id) throws InexistenteException {
-		if (!pedidoRepo.existsById(id)) {
-			throw new InexistenteException("No existe en id del pedido proporcionado");
-		}
-		pedidoRepo.deleteById(id);	
+		Pedido pedido = pedidoRepo.findById(id).orElseThrow(()-> new InexistenteException("No se encontro el recurso con el id "+ id));
+		pedidoRepo.delete(pedido);	
 	}
 
 	@Override
-	public void modificarElemento(Pedido elemNuevo, Long id) throws InexistenteException {
-			Pedido ped = pedidoRepo.findById(id).orElse(null);
-
-			if (ped == null) {
-				throw new InexistenteException("No existe el numero de pedido");
-			}
-			if (ped.getCliente().getId() == null || !clienteRepo.existsById(elemNuevo.getCliente().getId())) {
-				throw new InexistenteException("No existe el numero de cliente");
-			}
-			
+	public void modificarElemento(Pedido elemNuevo, Long id) {
+			Pedido ped = pedidoRepo.findById(id)
+					.orElseThrow(()-> new InexistenteException("No se encontró el recurso con el id "+ id));
+		
 			ped.setEstado(elemNuevo.getEstado());
 			ped.setFechaEntregado(elemNuevo.getFechaEntregado());
 			ped.setFechaPedido(elemNuevo.getFechaPedido());
 			ped.setNroPedido(elemNuevo.getNroPedido());
 			
 			//Para evitar inconsistencias, buscamos el id del cliente y guardamos ese mismo que traemos.
-			Cliente nuevoCliente = clienteRepo.findById(elemNuevo.getCliente().getId()).orElse(null); 
+			Cliente nuevoCliente = clienteRepo.findById(elemNuevo.getCliente().getId())
+					.orElseThrow(()-> new InexistenteException("No se encontró el recurso")); 
+			
 			ped.setCliente(nuevoCliente);//se supone que no deberia ser null, ya que se comprobo que exista el cliente previamente
 						
 			pedidoRepo.save(ped);

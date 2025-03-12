@@ -1,22 +1,16 @@
 package com.proyecto.gestorPedidos.excepciones;
 
-public class InexistenteException extends Exception {
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.HttpStatus;
 
-	private String mjs;
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class InexistenteException extends RuntimeException {
+	//¿Porque? porque de esa forma no me obluga a capturarla con un try chatch
+
 	
 	//CONSTRUCTOR
 	public InexistenteException(String msj) {
-		this.mjs = msj;
+		super(msj);
 	}
 	
-	
-	//GETTERS Y SETTERS
-	public void setMsj(String nuevoMsj) {
-		this.mjs = nuevoMsj;
-	}
-	
-	
-	public String getMsj() {
-		return this.mjs;
-	}
 }
