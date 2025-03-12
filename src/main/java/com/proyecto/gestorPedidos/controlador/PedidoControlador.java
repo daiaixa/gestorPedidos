@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,103 +23,92 @@ import com.proyecto.gestorPedidos.modelo.Pedido;
 import com.proyecto.gestorPedidos.servicio.ClienteServicio;
 import com.proyecto.gestorPedidos.servicio.PedidoServicio;
 
-
 @RestController
-@RequestMapping(path="api/pedido")
+@RequestMapping(path = "api/pedido")
 public class PedidoControlador {
 
 	@Autowired
 	PedidoServicio pedidoServ;
 	@Autowired
 	ClienteServicio clienteServ;
+
 	
 	
-	//QH: Busca un pedido determinado segun su id
+	// QH: Busca un pedido determinado segun su id
 	@GetMapping("/buscar/{id}")
-	public Pedido buscarPedidos(@PathVariable("id") Long id) {
-		return pedidoServ.traerElemento(id);
-		//CONTROLAR QUE SI ES NULL DEBERIA LANZAR UN ERROR
+	public ResponseEntity<Pedido> buscarPedidos(@PathVariable("id") Long id) {
+		return ResponseEntity.status(HttpStatus.OK).body(pedidoServ.traerElemento(id));
 	}
 
 	
-	//QH: Lista todos los pedidos
+	// QH: Lista todos los pedidos
 	@GetMapping("/listar")
-	public List<Pedido> listarPedidos() {
-		return pedidoServ.listarElementos();
+	public ResponseEntity<List<Pedido>> listarPedidos() {
+		return ResponseEntity.status(HttpStatus.OK).body(pedidoServ.listarElementos());
 	}
+
 	
-	
-	//QH: Lista aquellos pedidos segun el filtro de estado
+	// QH: Lista aquellos pedidos segun el filtro de estado
 	@GetMapping("/listar/{estado}")
-	public List<Pedido> listarPedidosPendientes(@PathVariable("estado") EstadoPedido estadoPed ){
-		
+	public ResponseEntity<List<Pedido>> listarPedidosPendientes(@PathVariable("estado") EstadoPedido estadoPed) {
+
 		Iterator<Pedido> listaPedidos = pedidoServ.listarElementos().iterator();
-		
+
 		List<Pedido> listaFiltrada = new ArrayList<Pedido>();
-		
+
 		while (listaPedidos.hasNext()) {
 			Pedido pedido = listaPedidos.next();
 			if (pedido.getEstado() == estadoPed) {
 				listaFiltrada.add(pedido);
 			}
 		}
-		return listaFiltrada;
+		return ResponseEntity.status(HttpStatus.OK).body(listaFiltrada);
 	}
+
 	
-	
-	//QH: Lista los pedidos de un determinado cliente segun su id
+	// QH: Lista los pedidos de un determinado cliente segun su id
 	@GetMapping("/listar/{id}")
-	public List<Pedido> listarPorCliente(@PathVariable ("idCliente") Long id){
+	public ResponseEntity<List<Pedido>> listarPorCliente(@PathVariable("id") Long id) {
 		if (id == null || !clienteServ.existeElemento(id)) {
-			new InexistenteException("No existe el id del cliente proporcionado");
+			throw new InexistenteException("No existe el id del cliente proporcionado");
 		}
-		
+
 		Iterator<Pedido> listaPedidos = pedidoServ.listarElementos().iterator();
-		
+
 		List<Pedido> listaPedidosCliente = new ArrayList<Pedido>();
-		
+
 		while (listaPedidos.hasNext()) {
 			Pedido pedido = listaPedidos.next();
 			if (pedido.getCliente().getId() == id) {
 				listaPedidosCliente.add(pedido);
 			}
 		}
-		
-		return listaPedidosCliente;
+
+		return ResponseEntity.status(HttpStatus.OK).body(listaPedidosCliente);
 	}
+
 	
-	
-	//QH: Crea un nuevo pedido
+	// QH: Crea un nuevo pedido
 	@PostMapping("/crear")
-	public void crearElemento(@RequestBody Pedido pedido){
-		try {
-			pedidoServ.guardarElemento(pedido);
-		} catch (InexistenteException e) {
-			System.out.println(e.getMsj());;
-		}
+	public ResponseEntity<String> crearElemento(@RequestBody Pedido pedido) {
+		pedidoServ.guardarElemento(pedido);
+		return ResponseEntity.status(HttpStatus.OK).body("El recurso fue creado con exito.");
 	}
+
 	
-	
-	//QH: Modifica un pedido segun su id
+	// QH: Modifica un pedido segun su id
 	@PutMapping("/modificar/{id}")
-	public void modificarElemento(@RequestBody Pedido pedido, @PathVariable("id") Long id) {
-		try {
+	public ResponseEntity<String> modificarElemento(@RequestBody Pedido pedido, @PathVariable("id") Long id) {
 			pedidoServ.modificarElemento(pedido, id);
-		} catch (InexistenteException e) {
-			System.out.println(e.getMsj());;
-			}
+			return ResponseEntity.status(HttpStatus.OK).body("El recurso fue modificado correctamente");
+
 	}
+
 	
-	
-	//QH: Elimina un pedido segun la id
+	// QH: Elimina un pedido segun la id
 	@DeleteMapping("/eliminar/{id}")
-	public void eliminarPedido(@PathVariable("id") Long id) {
-		try {
+	public ResponseEntity<String> eliminarPedido(@PathVariable("id") Long id) {
 			pedidoServ.eliminarElemento(id);
-		} catch (InexistenteException e) {
-			System.out.println(e.getMsj());;
-		}
+			return ResponseEntity.status(HttpStatus.OK).body("El recurso se eliminó correctamente");
 	}
-
 }
-

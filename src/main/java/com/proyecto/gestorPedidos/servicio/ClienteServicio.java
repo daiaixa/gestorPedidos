@@ -23,7 +23,7 @@ public class ClienteServicio implements ICRUDServicio<Cliente> {
 
 	@Override
 	public Cliente traerElemento(Long id) {
-		return clienteRepo.findById(id).orElse(null);
+		return clienteRepo.findById(id).orElseThrow(() -> new InexistenteException("No existe el recurso"));
 	}
 
 	@Override
@@ -32,25 +32,22 @@ public class ClienteServicio implements ICRUDServicio<Cliente> {
 	}
 
 	@Override
-	public void eliminarElemento(Long id) throws InexistenteException {
-		if (!clienteRepo.existsById(id)) {
-			throw new InexistenteException("No existe en id del pedido proporcionado");
-		}
-		clienteRepo.deleteById(id);
+	public void eliminarElemento(Long id) {
+		Cliente cliente = clienteRepo.findById(id).orElseThrow(() -> new InexistenteException("No existe el recurso"));
+
+		clienteRepo.delete(cliente);
 	}
 
+	
 	public boolean existeElemento(Long id) {
 		return clienteRepo.existsById(id);
 	}
 
 	@Override
-	public void modificarElemento(Cliente elemNuevo, Long id) throws InexistenteException {
-		Cliente clie = clienteRepo.findById(id).orElse(null);
-
-		if (clie == null) {
-			throw new InexistenteException("No existe el numero de cliente");
-		}
-
+	public void modificarElemento(Cliente elemNuevo, Long id) {
+		Cliente clie = clienteRepo.findById(id)
+				.orElseThrow(()-> new InexistenteException("No existe el numero de cliente"));
+		
 		clie.setNombre(elemNuevo.getNombre());
 		clie.setApellido(elemNuevo.getApellido());
 		clie.setTipoDocumento(elemNuevo.getTipoDocumento());
@@ -59,6 +56,7 @@ public class ClienteServicio implements ICRUDServicio<Cliente> {
 		clie.setEmail(elemNuevo.getEmail());
 		clie.setTelefono(elemNuevo.getTelefono());
 		clie.setNotas(elemNuevo.getNotas());
+		
 		clienteRepo.save(clie);
 	}
 

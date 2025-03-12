@@ -3,6 +3,9 @@ package com.proyecto.gestorPedidos.controlador;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,44 +31,42 @@ public class ClienteControlador {
 	
 	//QH: Trae los datos de un cliente segun el id
 	@GetMapping("/buscar/{id}")
-	public Cliente buscarCliente(@PathVariable("id") Long id) {
-		return clienteServ.traerElemento(id);
+	public ResponseEntity<?> buscarCliente(@PathVariable("id") Long id) {
+		Cliente cliente = clienteServ.traerElemento(id);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(cliente);
 	}
 
 	
 	//QH: Lista todos los clientes
 	@GetMapping("/listar")
-	public List<Cliente> listarClientes() {
-		return clienteServ.listarElementos();
+	public ResponseEntity<List<Cliente>> listarClientes() {
+		return ResponseEntity.status(HttpStatus.OK).body(clienteServ.listarElementos());
 	}
 	
 	
 	//QH: Crea un nuevo cliente	
 	@PostMapping("/crear")
-	public void crear(@RequestBody Cliente cliente) {
+	public ResponseEntity<String> crear(@RequestBody Cliente cliente) {
 		clienteServ.guardarElemento(cliente);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body("El recurso fue creado con exito.");
 	}
 	
 	
 	//QH: Modifica un cliente segun el id
 	@PutMapping("/modificar/{id}")
-	public void modificar(@RequestBody Cliente cliente, @PathVariable("id") Long id) {
-		try {
-			clienteServ.modificarElemento(cliente, id);
-		} catch (InexistenteException e) {
-			System.out.println(e.getMsj()); //TENDRIA QUE TIRAR UN ERROR HTTP
-		}
+	public ResponseEntity<String> modificar(@RequestBody Cliente cliente, @PathVariable("id") Long id) {
+		clienteServ.modificarElemento(cliente, id);
+		return ResponseEntity.status(HttpStatus.OK).body("El recurso fue modificado con exito");
 	}
 	
 	
 	//QH: Elimina un cliente segun el id 
 	@DeleteMapping("/eliminar/{id}")
-	public void eliminarCliente(@PathVariable("id") Long id) {
-		try {
-			clienteServ.eliminarElemento(id);
-		} catch (InexistenteException e) {
-			System.out.println(e.getMsj());;
-		}
+	public ResponseEntity<String> eliminarCliente(@PathVariable("id") Long id) {
+		clienteServ.eliminarElemento(id);
+		return ResponseEntity.status(HttpStatus.OK).body("El recurso se eliminó con exito.");
 	}
 
 }
